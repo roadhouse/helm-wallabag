@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallabag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallabag
+  template:
+    metadata:
+      labels:
+        app: wallabag
+    spec:
+      containers:
+        - name: wallabag
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: SYMFONY__ENV__DOMAIN_NAME
+              value: "{{ .Values.env.DOMAIN_NAME }}"
+          volumeMounts:
+            - name: wallabag-data
+              mountPath: {{ .Values.persistence.mountPath }}
+      volumes:
+        - name: wallabag-data
+          hostPath:
+            path: {{ .Values.persistence.hostPath }}
+            type: Directory

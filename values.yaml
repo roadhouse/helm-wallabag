@@ -1,0 +1,18 @@
+image:
+  repository: wallabag/wallabag
+  tag: 2.5.2
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+persistence:
+  enabled: true
+  hostPath: ""
+  mountPath: /var/www/wallabag/data
+
+env:
+  DOMAIN_NAME: ""
+
+resources: {}
