@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: wallabag
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "wallabag/wallabag:2.5.2"
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           env:
@@ -23,7 +23,7 @@ spec:
               value: "{{ .Values.env.DOMAIN_NAME }}"
           volumeMounts:
             - name: wallabag-data
-              mountPath: {{ .Values.persistence.mountPath }}
+              mountPath: /var/www/wallabag/data
       volumes:
         - name: wallabag-data
           hostPath:
