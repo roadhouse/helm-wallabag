@@ -1,5 +1,5 @@
 apiVersion: v2
 name: wallabag
 description: A Helm chart for Wallabag with SQLite and hostPath PVC
-version: 0.1.1
+version: 0.1.2
 appVersion: "2.5.2"

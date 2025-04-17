@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: wallabag
-          image: "wallabag/wallabag:2.5.2"
+          image: "wallabag/wallabag:2.6.12"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
