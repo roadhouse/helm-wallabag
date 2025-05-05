@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wallabag
+  name: {{ include "wallabag.fullname" . }}
+  labels:
+    {{- include "wallabag.labels" . | nindent 4 }}
 spec:
   selector:
-    app: wallabag
-  type: ClusterIP
+    {{- include "wallabag.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}
   ports:
-    - port: 80
-      targetPort: 80
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}

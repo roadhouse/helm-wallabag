@@ -1,18 +1,73 @@
+# Container image repo and tag
 image:
   repository: wallabag/wallabag
-  tag: 2.5.2
+  tag: 2.6.12
   pullPolicy: IfNotPresent
 
+# Ingress configuration
+ingress:
+  className: nginx
+  domainName: "wallabag.example.com"
+  enabled: false
+  proxyConnectTimeout: 300s
+  proxyReadTimeout: 300s
+  tls:
+    enabled: true
+
+# cert-manager issuer configuration, would be setup Ingress annotation
+issuer:
+  enabled: false
+  emailAddress: email@example.com
+
+# service ClusterIP/NodePort and port number, typically 80
 service:
   type: ClusterIP
   port: 80
+  targetPort: 80
 
+# persistant data for assets and sqllite, must be exists
 persistence:
   enabled: true
-  hostPath: ""
+  hostPath: "/tmp"
   mountPath: /var/www/wallabag/data
 
+# environment variables, mostly domain name is required, otherwise wallabag will not work correctly
+# memory and timeout needs to increase if you have problems with import big data
 env:
-  DOMAIN_NAME: ""
+  SYMFONY__ENV__DOMAIN_NAME: "https://wallabag.example.com:443"
+  PHP_MEMORY_LIMIT: 256M
+  FASTCGI_READ_TIMEOUT: 300s
 
-resources: {}
+# used compute resources
+resources:
+  limits:
+    memory: 500Mi
+    cpu: 500m
+  requests:
+    memory: 256Mi
+    cpu: 300m
+
+# TODO: this won't work at the moment while wallabag provision needs a lot of write permissions and wants chown directories
+# minimal permissions for pod
+#podSecurityContext:
+#  fsGroup: 65534
+#  supplementalGroups:
+#  - 65534
+#  runAsNonRoot: true
+#  seccompProfile:
+#    type: RuntimeDefault
+
+# minimal permissions for container
+#securityContext:
+#  readOnlyRootFilesystem: true
+#  allowPrivilegeEscalation: false
+#  capabilities:
+#    drop:
+#    - ALL
+#    - CAP_NET_RAW
+#  privileged: false
+#  runAsUser: 65534
+#  runAsGroup: 65534
+#  seccompProfile:
+#    type: RuntimeDefault
+

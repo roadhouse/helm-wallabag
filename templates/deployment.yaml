@@ -1,30 +1,56 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wallabag
+  name: {{ include "wallabag.fullname" . }}
+  labels:
+    {{- include "wallabag.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wallabag
+      {{- include "wallabag.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: wallabag
+        {{- include "wallabag.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: wallabag
-          image: "wallabag/wallabag:2.6.12"
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.service.targetPort }}
           env:
-            - name: SYMFONY__ENV__DOMAIN_NAME
-              value: "{{ .Values.env.DOMAIN_NAME }}"
+          {{- range $key, $value := .Values.env }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.securityContext }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: wallabag-data
               mountPath: /var/www/wallabag/data
+            - name: wallabag-var
+              mountPath: /var/www/wallabag/var
+            - name: tmp
+              mountPath: /tmp
+      {{- if .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
       volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 500Mi
+        - name: wallabag-var
+          emptyDir:
+            sizeLimit: 5Gi
         - name: wallabag-data
           hostPath:
             path: {{ .Values.persistence.hostPath }}
