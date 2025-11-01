@@ -1,6 +1,6 @@
 # Wallabag Helm Chart
 
-This Helm chart deploys Wallabag v2.5.2, a self-hosted read-it-later application, on Kubernetes using SQLite as the database backend.
+This Helm chart deploys Wallabag v2.6.14, a self-hosted read-it-later application, on Kubernetes using SQLite as the database backend.
 
 ## Description
 
@@ -27,7 +27,7 @@ The following table lists the configurable parameters of the Wallabag chart. Mod
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `image.repository` | Wallabag image repository | `wallabag/wallabag` |
-| `image.tag` | Wallabag image tag | `2.5.2` |
+| `image.tag` | Wallabag image tag | `2.6.14` |
 | `persistence.enabled` | Enable persistence for SQLite database | `true` |
 | `persistence.hostPath` | Host path for SQLite database storage | `/path/to/data` |
 
